@@ -95,8 +95,19 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <!-- Cucumber JUnit5 Suite runners commonly use either the
+                         *Test.java or *Runner.java naming convention. Surefire's
+                         default include pattern only catches Test*/Tests/TestCase
+                         names, so a runner renamed to e.g. CucumberTestRunner.java
+                         would be skipped — combined with failIfNoTests=true that
+                         surfaces to the LT pod as errorType=initialization with
+                         no log artifacts. Listing both conventions makes the
+                         build robust to runner-class renames. -->
                     <includes>
-                        <include>**/RunCucumberTest.java</include>
+                        <include>**/*Runner.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
                     </includes>
                     <useModulePath>false</useModulePath>
                     <!-- Fail the build if zero scenarios execute (e.g., when every Cucumber scenario
